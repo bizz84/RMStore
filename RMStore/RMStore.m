@@ -536,6 +536,11 @@ typedef void (^RMStoreSuccessBlock)();
         [queue finishTransaction:transaction];
     }
     
+    if (transaction.error.code == SKErrorPaymentCancelled)
+    { // if purchase was canceled, report appropriate error
+        error = [NSError errorWithDomain:RMStoreErrorDomain code:RMStoreErrorCodeDownloadCanceled userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"Download canceled", "Error description")}];
+    }
+
     RMAddPaymentParameters *parameters = [self popAddPaymentParametersForIdentifier:productIdentifier];
     if (parameters.failureBlock != nil)
     {
